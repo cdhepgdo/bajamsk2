@@ -1,0 +1,223 @@
+<!-- <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Descargar Video o Música de YouTube</title>
+</head>
+<body>
+  <h1>Descargar Video o Música de YouTube</h1>
+  <form id="downloadForm">
+    <label for="url">URL de YouTube:</label>
+    <input type="text" id="url" name="url" required>
+    <br><br>
+    <label for="format">Formato:</label>
+    <select id="format" name="format">
+      <option value="video">Video</option>
+      <option value="audio">Audio</option>
+    </select>
+    <br><br>
+    <button type="submit">Descargar</button>
+  </form>
+  <script>
+    document.getElementById('downloadForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const url = document.getElementById('url').value;
+      const format = document.getElementById('format').value;
+
+      // Crear URL para descargar en el backend
+      console.log(`/download?url=${encodeURIComponent(url)}&format=${format}`)
+      const response = await fetch(`/download?url=${encodeURIComponent(url)}&format=${format}`);
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `download.${format === 'audio' ? 'mp3' : 'mp4'}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(downloadUrl);
+      } else {
+        alert('Error en la descarga. Intenta con otra URL.');
+      }
+    });
+  </script>
+</body>
+</html>
+ -->
+
+
+
+
+
+<!--  <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Descargar Video o Música de YouTube</title>
+</head>
+<body>
+  <h1>Descargar Video o Música de YouTube</h1>
+  <form id="infoForm">
+    <label for="url">URL de YouTube:</label>
+    <input type="text" id="url" name="url" required>
+    <button type="submit">Obtener Información</button>
+  </form>
+
+  <div id="videoInfo" style="display: none;">
+    <h2>Selecciona la calidad de descarga para: <span id="videoTitle"></span></h2>
+    <form id="downloadForm">
+      <label for="format">Calidad:</label>
+      <select id="format" name="format"></select>
+      <button type="submit">Descargar</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('infoForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const url = document.getElementById('url').value;
+
+      const response = await fetch(`/video-info?url=${encodeURIComponent(url)}`);
+      if (response.ok) {
+        const data = await response.json();
+
+        document.getElementById('videoTitle').textContent = data.title;
+        const formatSelect = document.getElementById('format');
+        formatSelect.innerHTML = '';
+
+        data.formats.forEach(format => {
+          const option = document.createElement('option');
+          option.value = format.format_id;
+          option.textContent = `${format.format_note || 'N/A'} - ${format.resolution}`;
+          formatSelect.appendChild(option);
+        });
+
+        document.getElementById('videoInfo').style.display = 'block';
+      } else {
+        alert('Error al obtener información del video. Intenta con otra URL.');
+      }
+    });
+
+    document.getElementById('downloadForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const url = document.getElementById('url').value;
+      const format_id = document.getElementById('format').value;
+      const title = document.getElementById('videoTitle').textContent;
+
+      const response = await fetch(`/download?url=${encodeURIComponent(url)}&format_id=${format_id}&title=${encodeURIComponent(title)}`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `${title}.${format_id.includes('audio') ? 'mp3' : 'mp4'}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(downloadUrl);
+      } else {
+        alert('Error en la descarga. Intenta nuevamente.');
+      }
+    });
+  </script>
+</body>
+</html>
+ -->
+
+
+
+
+
+
+
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Descargar Video o Música de YouTube</title>
+</head>
+<body>
+  <h1>Descargar Video o Música de YouTube</h1>
+  <form id="infoForm">
+    <label for="url">URL de YouTube:</label>
+    <input type="text" id="url" name="url" required>
+    <br><br>
+
+    <label for="type">Tipo de descarga:</label>
+    <select id="type" name="type">
+      <option value="audio">Audio</option>
+      <option value="video">Video</option>
+    </select>
+    <br><br>
+
+    <button type="submit">Obtener Información</button>
+  </form>
+
+  <div id="videoInfo" style="display: none;">
+    <h2>Selecciona la calidad de descarga para: <span id="videoTitle"></span></h2>
+    <form id="downloadForm">
+      <label for="format">Calidad:</label>
+      <select id="format" name="format"></select>
+      <button type="submit">Descargar</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('infoForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const url = document.getElementById('url').value;
+      const type = document.getElementById('type').value;
+
+      const response = await fetch(`/video-info?url=${encodeURIComponent(url)}&type=${type}`);
+      if (response.ok) {
+        const data = await response.json();
+
+        document.getElementById('videoTitle').textContent = data.title;
+        const formatSelect = document.getElementById('format');
+        formatSelect.innerHTML = '';
+
+        data.formats.forEach(format => {
+          const option = document.createElement('option');
+          option.value = format.format_id;
+          option.textContent = `${format.format_note || 'N/A'} - ${format.resolution}`;
+          formatSelect.appendChild(option);
+        });
+
+        document.getElementById('videoInfo').style.display = 'block';
+      } else {
+        alert('Error al obtener información del video. Intenta con otra URL.');
+      }
+    });
+
+    document.getElementById('downloadForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const url = document.getElementById('url').value;
+      const format_id = document.getElementById('format').value;
+      const title = document.getElementById('videoTitle').textContent;
+
+      const response = await fetch(`/download?url=${encodeURIComponent(url)}&format_id=${format_id}&title=${encodeURIComponent(title)}`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `${title}.${format_id.includes('audio') ? 'mp3' : 'mp4'}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(downloadUrl);
+      } else {
+        alert('Error en la descarga. Intenta nuevamente.');
+      }
+    });
+  </script>
+</body>
+</html>
